@@ -1,3 +1,4 @@
+const schedule = require("node-schedule");
 const { default: axios } = require("axios");
 const { GoogleSpreadsheet } = require("google-spreadsheet");
 const googleCredentials = require("../google-credentials.json");
@@ -52,4 +53,17 @@ const main = async () => {
     fs.writeFileSync(process.env.WHITELIST_PATH, JSON.stringify(playersAndUUIDS))
 }
 
-main()
+
+process.on("SIGINT", function () {
+  schedule.gracefulShutdown().then(() => process.exit(0));
+});
+
+//Run at minute 0 of every hour
+schedule.scheduleJob("*/5 * * * *", () => {
+  console.log("Starting run at " + new Date());
+  main();
+  console.log("Run complete")
+});
+
+//Run it once on startup
+main();
