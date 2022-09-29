@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "src\\index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +11,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.2",
-    "google-spreadsheet": "^3.3.0"
+    "google-spreadsheet": "^3.3.0",
+    "node-schedule": "^2.1.0"
   }
 }
