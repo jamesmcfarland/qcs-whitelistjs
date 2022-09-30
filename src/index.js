@@ -5,6 +5,10 @@ const googleCredentials = require("../google-credentials.json");
 require('dotenv').config()
 const fs = require("fs");
 
+const formatUUID = uuid => {
+    return uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, 32);
+}
+
 const main = async () => {
     console.log("QCS MC Whitelist\nJames McFarland\nQueen's Computing Society\n\nConnecting to google...")
     const doc = new GoogleSpreadsheet(process.env.SHEET_ID)
@@ -45,7 +49,7 @@ const main = async () => {
         console.log(`Fetching ${i + i}/${allUsersToPost.length}`)
         const resp = await axios.post("https://api.mojang.com/profiles/minecraft", allUsersToPost[i])
         for (const player of resp.data) {
-            playersAndUUIDS.push({ uuid: player.id, name: player.name })
+            playersAndUUIDS.push({ uuid: formatUUID(player.id), name: player.name })
         }
     }
     console.log("Processed all users... saving to file")
@@ -55,15 +59,16 @@ const main = async () => {
 
 
 process.on("SIGINT", function () {
-  schedule.gracefulShutdown().then(() => process.exit(0));
+    schedule.gracefulShutdown().then(() => process.exit(0));
 });
 
 //Run at minute 0 of every hour
 schedule.scheduleJob("*/5 * * * *", () => {
-  console.log("Starting run at " + new Date());
-  main();
-  console.log("Run complete")
+    console.log("Starting run at " + new Date());
+    main();
+    console.log("Run complete")
 });
 
 //Run it once on startup
 main();
+
